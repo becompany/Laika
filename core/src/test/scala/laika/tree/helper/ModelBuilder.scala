@@ -161,8 +161,10 @@ trait ModelBuilder {
   
   
   def litBlock (content: String) = LiteralBlock(content)
-  
-  
+
+  def codeBlock (language: String, content: Seq[Span]) = CodeBlock(language, content)
+
+
   def h (level: Int, content: Span*) = Header(level, content.toList)
 
   def h (level: Int, content: String) = Header(level, List(txt(content)))

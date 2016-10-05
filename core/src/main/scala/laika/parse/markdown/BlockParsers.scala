@@ -161,7 +161,7 @@ trait BlockParsers extends laika.parse.BlockParsers { self: InlineParsers =>
   
   /** Parses a literal block, text indented by a tab or 4 spaces.
    */
-  val literalBlock: Parser[LiteralBlock] = {
+  def literalBlock: Parser[Block] = {
     mdBlock(tabOrSpace, tabOrSpace, tabOrSpace) ^^ { lines => new LiteralBlock(lines.map(processWS).mkString("\n")) }
   }
   
