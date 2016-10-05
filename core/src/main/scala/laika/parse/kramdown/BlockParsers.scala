@@ -13,7 +13,7 @@ trait BlockParsers extends laika.parse.markdown.BlockParsers {
 
   /** Parses a literal block fence.
     */
-  val literalBlockFence: Parser[Any] = anyOf('~') take 4
+  val literalBlockFence: Parser[Any] = anyOf('~') min 3
 
   /** Parses a fenced literal block.
     */
