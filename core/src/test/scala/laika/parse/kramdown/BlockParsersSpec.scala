@@ -2,7 +2,7 @@ package laika.parse.kramdown
 
 import laika.parse.helper.{DefaultParserHelpers, ParseResultHelpers}
 import laika.parse.markdown.InlineParsers
-import laika.tree.Elements.{RootElement, Text}
+import laika.tree.Elements.{Paragraph, RootElement, Styles, Text}
 import laika.tree.helper.ModelBuilder
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -36,6 +36,14 @@ class BlockParsersSpec extends FlatSpec
                   |
                   |text""".stripMargin
     Parsing (input) should produce (root(p("text"), codeBlock("scala", Seq(Text("code"))), p("text")))
+  }
+
+  it should "parse CSS classes in paragraphs" in {
+    val input =
+      """{: .foo .bar}
+        |text
+      """.stripMargin
+    Parsing (input) should produce (root(Paragraph(Seq(Text("text")), Styles("foo", "bar"))))
   }
 
 }

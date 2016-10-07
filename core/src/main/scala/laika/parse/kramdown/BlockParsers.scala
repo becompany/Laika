@@ -1,10 +1,11 @@
 package laika.parse.kramdown
 
+import laika.parse.RegexMatchParsers
 import laika.parse.markdown.InlineParsers
 import laika.parse.util.WhitespacePreprocessor
-import laika.tree.Elements.{Block, CodeBlock, LiteralBlock, Text}
+import laika.tree.Elements._
 
-trait BlockParsers extends laika.parse.markdown.BlockParsers {
+trait BlockParsers extends laika.parse.markdown.BlockParsers with RegexMatchParsers {
 
   self: InlineParsers =>
 
@@ -34,9 +35,33 @@ trait BlockParsers extends laika.parse.markdown.BlockParsers {
     */
   def fencedBlock(fence: => Parser[Any]): Parser[~[Option[String], List[String]]] = {
     val firstLine = fence ~> (ws ~> language).? <~ eol
-    lazy val codeLine = guard(not(fence)) ~> restOfLine
+    lazy val codeLine = not(fence) ~> restOfLine
     lazy val lastLine = fence <~ eol
     firstLine ~ codeLine.* <~ lastLine
+  }
+
+  private val cssRegex = """\{\:((?:\s*\.?[a-zA-Z\-]+)+)\}""".r
+
+  def inlineAttributes: Parser[List[String]] =
+    regexMatch(cssRegex) <~ eol ^^ (_.group(1).trim.split("""\s+""").map(_.substring(1)).toList)
+
+  override protected def prepareBlockParsers(nested: Boolean): List[Parser[Block]] = {
+    super.prepareBlockParsers(nested) map { parser =>
+      inlineAttributes.? ~ parser ^^ {
+        case ~(None, block) => block
+        case ~(Some(classes), block) =>
+          val styles = Styles(classes :_*)
+          block match {
+            case p: Paragraph => p.copy(options = p.options + styles)
+            case p: CodeBlock => p.copy(options = p.options + styles)
+            case p: LiteralBlock => p.copy(options = p.options + styles)
+            case p: BulletList => p.copy(options = p.options + styles)
+            case p: EnumList => p.copy(options = p.options + styles)
+            case p => p
+          }
+      }
+    }
+
   }
 
 }
