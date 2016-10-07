@@ -43,7 +43,7 @@ trait BlockParsers extends laika.parse.markdown.BlockParsers with RegexMatchPars
   private val cssRegex = """\{\:((?:\s*\.?[a-zA-Z\-]+)+)\}""".r
 
   def inlineAttributes: Parser[List[String]] =
-    regexMatch(cssRegex) <~ eol ^^ (_.group(1).trim.split("""\s+""").map(_.substring(1)).toList)
+    regexMatch(cssRegex) <~ eol ^^ (_.group(1).split("""\s*\.""").drop(1).toList)
 
   override protected def prepareBlockParsers(nested: Boolean): List[Parser[Block]] = {
     super.prepareBlockParsers(nested) map { parser =>

@@ -40,10 +40,10 @@ class BlockParsersSpec extends FlatSpec
 
   it should "parse CSS classes in paragraphs" in {
     val input =
-      """{: .foo .bar}
+      """{: .foo .bar.baz}
         |text
       """.stripMargin
-    Parsing (input) should produce (root(Paragraph(Seq(Text("text")), Styles("foo", "bar"))))
+    Parsing (input) should produce (root(Paragraph(Seq(Text("text")), Styles("foo", "bar", "baz"))))
   }
 
 }
