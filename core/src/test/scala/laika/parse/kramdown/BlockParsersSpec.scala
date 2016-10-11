@@ -38,7 +38,7 @@ class BlockParsersSpec extends FlatSpec
     Parsing (input) should produce (root(p("text"), codeBlock("scala", Seq(Text("code"))), p("text")))
   }
 
-  it should "parse CSS classes in paragraphs" in {
+  "The block parser" should "parse CSS classes in paragraphs" in {
     val input =
       """{: .foo .bar.baz}
         |text

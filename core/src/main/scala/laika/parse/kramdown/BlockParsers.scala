@@ -5,7 +5,7 @@ import laika.parse.markdown.InlineParsers
 import laika.parse.util.WhitespacePreprocessor
 import laika.tree.Elements._
 
-trait BlockParsers extends laika.parse.markdown.BlockParsers with RegexMatchParsers {
+trait BlockParsers extends laika.parse.markdown.BlockParsers with TableParsers with RegexMatchParsers {
 
   self: InlineParsers =>
 
