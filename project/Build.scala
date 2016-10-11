@@ -8,7 +8,6 @@ import sbtunidoc.Plugin.unidocSettings
 
 object Build extends Build {
 
-
   object Settings {
     
     lazy val basic = Seq(
@@ -98,11 +97,23 @@ object Build extends Build {
     )
     
     lazy val sbtPlugins = bintrayPublishSettings ++ Seq(
-      
       publishMavenStyle := false,
       repository in bintray := "sbt-plugins",
       bintrayOrganization in bintray := None
-      
+    )
+
+    lazy val becompanyNexus = Seq(
+      publishMavenStyle       := true,
+      publishArtifact in Test := false,
+      pomIncludeRepository    := { _ => false },
+      publishTo := {
+        val nexus = "https://nexus.becompany.ch/"
+        if (version.value.trim.endsWith("SNAPSHOT"))
+          Some("thirdparty-snapshots" at nexus + "content/repositories/thirdparty-snapshots")
+        else
+          Some("thirdparty-releases" at nexus + "content/repositories/thirdparty")
+      },
+      credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
     )
     
     lazy val none = Seq(
@@ -123,7 +134,7 @@ object Build extends Build {
  
   lazy val core = Project("laika-core", file("core"))
     .settings(Settings.module: _*)
-    .settings(Publishing.mavenCentral: _*)
+    .settings(Publishing.becompanyNexus: _*)
     .settings(libraryDependencies ++= { Seq(
       Dependencies.config,
       Dependencies.scalatest, 
