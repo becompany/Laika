@@ -20,11 +20,12 @@ class TableParsersSpec extends FlatSpec
     val input = """|| a | b |
                    ||---
                    || c | d |
+                   ||---
                    || e | f |
                    ||===
                    || g | h |
                    |""".stripMargin
-println(input)
+
     Parsing (input) should produce (root(Table(
       TableHead(Seq(
         Row(Seq(Cell(HeadCell, Seq(p("a"))), Cell(HeadCell, Seq(p("b")))))
