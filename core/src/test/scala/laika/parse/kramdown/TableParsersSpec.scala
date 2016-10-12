@@ -20,7 +20,7 @@ class TableParsersSpec extends FlatSpec
     val input = """|| a | b |
                    ||---
                    || c | d |
-                   ||---
+                   || - | - |
                    || e | f |
                    ||===
                    || g | h |
