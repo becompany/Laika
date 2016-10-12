@@ -18,15 +18,15 @@ trait BlockParsers extends laika.parse.markdown.BlockParsers with TableParsers w
 
   /** Parses a fenced literal block.
     */
-  override def literalBlock: Parser[Block] =
-    super.literalBlock | (fencedBlock(literalBlockFence) ^^ {
+  def fencedLiteralBlock: Parser[Block] =
+    fencedBlock(literalBlockFence) ^^ {
       case ~(languageOpt, lines) =>
         val code = lines.map(processWS).mkString("\n")
         languageOpt match {
           case Some(lang) => CodeBlock(lang, Seq(Text(code)))
           case None => LiteralBlock(code)
         }
-    })
+    }
 
   /**
     * Parses a fenced code block with optional language.
@@ -45,6 +45,10 @@ trait BlockParsers extends laika.parse.markdown.BlockParsers with TableParsers w
   def inlineAttributes: Parser[List[String]] =
     regexMatch(cssRegex) <~ eol ^^ (_.group(1).split("""\s*\.""").drop(1).toList)
 
+  override def standardMarkdownBlock: Parser[Block] =
+    atxHeader | setextHeader | (insignificantSpaces ~>
+      (table | fencedLiteralBlock | literalBlock | quotedBlock | rule | bulletList | enumList))
+
   override protected def prepareBlockParsers(nested: Boolean): List[Parser[Block]] = {
     super.prepareBlockParsers(nested) map { parser =>
       inlineAttributes.? ~ parser ^^ {
@@ -57,6 +61,7 @@ trait BlockParsers extends laika.parse.markdown.BlockParsers with TableParsers w
             case p: LiteralBlock => p.copy(options = p.options + styles)
             case p: BulletList => p.copy(options = p.options + styles)
             case p: EnumList => p.copy(options = p.options + styles)
+            case p: Table => p.copy(options = p.options + styles)
             case p => p
           }
       }

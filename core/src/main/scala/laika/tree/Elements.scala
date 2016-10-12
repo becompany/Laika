@@ -381,7 +381,7 @@ object Elements {
   
   /** A table consisting of a head and a body part and optional caption and column specification.  
    */
-  case class Table (head: TableHead, body: TableBody, caption: Caption = Caption(), columns: Columns = Columns(Nil), options: Options = NoOpt) extends Block
+  case class Table (head: TableHead, body: TableBody, foot: TableFoot = TableFoot(Seq.empty), caption: Caption = Caption(), columns: Columns = Columns(Nil), options: Options = NoOpt) extends Block
                                                                                                                  with ElementTraversal[Table] {
     override def toString = "\n" + (Render as PrettyPrint from this toString) + "\n" 
   }
@@ -401,7 +401,11 @@ object Elements {
   /** Contains the body rows of a table. 
    */
   case class TableBody (content: Seq[Row], options: Options = NoOpt) extends TableElement with TableContainer[TableBody]
-  
+
+  /** Contains the foot rows of a table.
+    */
+  case class TableFoot (content: Seq[Row], options: Options = NoOpt) extends TableElement with TableContainer[TableFoot]
+
   /** The table caption.
    */
   case class Caption (content: Seq[Span] = Nil, options: Options = NoOpt) extends TableElement with SpanContainer[Caption]
