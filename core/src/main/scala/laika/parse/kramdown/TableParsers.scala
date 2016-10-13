@@ -39,18 +39,18 @@ trait TableParsers extends laika.parse.BlockParsers { self: InlineParsers =>
     def simpleRowSep(c: Char) = anyOf(c).min(1)
     def columnsRowSep(c: Char) = (ws.? ~ simpleRowSep(c) ~ ws.? ~ colSep).*
 
-    def rowSep(c: Char) = colSep ~ (simpleRowSep(c) | columnsRowSep(c)) ~ eol
+    def rowSep(c: Char) = (simpleRowSep(c) | columnsRowSep(c)) ~ eol
 
     val tBodySep = rowSep('-') ^^^ BodySep
     val tFootSep = rowSep('=') ^^^ FootSep
 
-    val cell = colSep ~> anyBut('|', '\n').min(1) <~ guard(colSep) ^^ { text =>
+    val cell = anyUntil(colSep | eol).min(1) ^^ { text =>
       Paragraph(parseInline(text.trim))
     }
 
-    val cellRow = cell.+ <~ colSep <~ eol ^^ CellRow
+    val cellRow = cell.+ <~ eol ^^ CellRow
 
-    val row = tBodySep | tFootSep | cellRow
+    val row = colSep ~> (tBodySep | tFootSep | cellRow)
 
     def splitRows(rows: List[RowElement], sep: SepElement = BodySep): List[(List[CellRow], SepElement)] = {
       val cellRows = rows.takeWhile(_.isInstanceOf[CellRow]).map(_.asInstanceOf[CellRow])
