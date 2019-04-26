@@ -56,7 +56,7 @@ class HTMLRenderer (out: HTMLWriter, messageLevel: MessageLevel, fileSuffix: Str
         val left = Cell(BodyCell, List(SpanSequence(List(Text(s"[$label]")))))
         val right = Cell(BodyCell, content)
         val row = Row(List(left,right))
-        Table(TableHead(Nil), TableBody(List(row)), Caption(),
+        Table(TableHead(Nil), TableBody(List(row)), TableFoot(Seq.empty), Caption(),
           Columns.options(Styles("label"),NoOpt), options)
       }
 

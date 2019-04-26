@@ -505,7 +505,12 @@ case class LineBlock (content: Seq[LineBlockItem], options: Options = NoOpt) ext
 
 /** A table consisting of a head and a body part and optional caption and column specification.
  */
-case class Table (head: TableHead, body: TableBody, caption: Caption = Caption(), columns: Columns = Columns(Nil), options: Options = NoOpt) extends Block
+case class Table (head: TableHead,
+                  body: TableBody,
+                  foot: TableFoot = TableFoot(Seq.empty),
+                  caption: Caption = Caption(),
+                  columns: Columns = Columns(Nil),
+                  options: Options = NoOpt) extends Block
                                                                                                                with ElementTraversal with RewritableContainer[Table] {
   
   def rewriteChildren (rules: RewriteRules): Table = copy(head = head.rewriteChildren(rules), body = body.rewriteChildren(rules), caption = caption.rewriteChildren(rules))
@@ -532,6 +537,11 @@ case class TableHead (content: Seq[Row], options: Options = NoOpt) extends Table
 case class TableBody (content: Seq[Row], options: Options = NoOpt) extends TableElement with TableContainer[TableBody] with RewritableContainer[TableBody] {
   def rewriteChildren (rules: RewriteRules): TableBody = copy(content = content.map(_.rewriteChildren(rules)))
 }
+
+
+/** Contains the foot rows of a table.
+  */
+case class TableFoot (content: Seq[Row], options: Options = NoOpt) extends TableElement with TableContainer[TableFoot]
 
 /** The table caption.
  */
