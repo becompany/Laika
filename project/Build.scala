@@ -11,14 +11,14 @@ object Build extends Build {
   object Settings {
     
     lazy val basic = Seq(
-      version               := "0.7.1-SNAPSHOT",
+      version               := "0.7.1",
       homepage              := Some(new URL("http://planet42.github.io/Laika/")),
       organization          := "org.planet42",
       organizationHomepage  := Some(new URL("http://www.planet42.org")),
       description           := "Text Markup Transformer for sbt and Scala applications",
       startYear             := Some(2012),
       licenses              := Seq("Apache 2.0" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
-      scalaVersion          := "2.10.6",
+      scalaVersion          := "2.12.6",
       scalacOptions         := Opts.compile.encoding("UTF-8") :+ 
                                Opts.compile.deprecation :+ 
                                Opts.compile.unchecked :+ 
@@ -30,7 +30,7 @@ object Build extends Build {
     
     lazy val module = basic ++ Seq(
       crossVersion       := CrossVersion.binary,
-      crossScalaVersions := Seq("2.10.6", "2.11.8")
+      crossScalaVersions := Seq("2.12.6")
     )
     
   }
@@ -39,7 +39,7 @@ object Build extends Build {
     
     val parser    = "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4"
     
-    val scalatest = "org.scalatest" %% "scalatest" % "2.2.6"  % "test"
+    val scalatest = "org.scalatest" %% "scalatest" % "3.0.7"  % "test"
         
     val jTidy     = "net.sf.jtidy"  % "jtidy"      % "r938" % "test"
         
